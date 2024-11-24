@@ -4,6 +4,8 @@ from rest_framework import status
 
 from .models import User
 from .serializers import UserSerializer
+from projects.models import Project  
+from projects.serializers import ProjectSerializer
 
 
 @api_view(['GET'])
@@ -23,3 +25,18 @@ def create(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def get_user_and_project_by_id(request, pk):
+    try:
+        project = Project.objects.get(pk=pk)
+    except Project.DoesNotExist:
+        return Response({'message': 'Project not found'}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    projectSerializer = ProjectSerializer(project)
+    userSerializer = UserSerializer(user)
+
+    return Response({"user":userSerializer.data, "project": projectSerializer.data},status=status.HTTP_201_CREATED)
