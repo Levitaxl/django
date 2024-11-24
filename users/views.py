@@ -19,11 +19,16 @@ def get_all(request):
 
 @api_view(['POST'])
 def create(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    userSerializer = UserSerializer(data=request.data)
+    if userSerializer.is_valid():
+        user = userSerializer.save()
+        fk_project = request.data.get('project_id')  
+        project = Project.objects.get(id=fk_project)
+        user.projects.add(project)
+
+        return Response(userSerializer.data, status=status.HTTP_201_CREATED)
+    return Response(userSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET'])
 def get_user_and_project_by_id(request, pk):
@@ -40,3 +45,15 @@ def get_user_and_project_by_id(request, pk):
     userSerializer = UserSerializer(user)
 
     return Response({"user":userSerializer.data, "project": projectSerializer.data},status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+def get(request, pk):
+    try:
+        user = User.objects.get(id=pk)
+        projects = user.projects.all()
+        # Puedes personalizar la respuesta según tus necesidades
+        serializerProject = ProjectSerializer(projects, many=True)
+        userSerializer = UserSerializer(user)
+        return Response({"user":userSerializer.data, "projects": serializerProject.data}, status=status.HTTP_201_CREATED)
+    except User.DoesNotExist:
+        return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
