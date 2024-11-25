@@ -1,0 +1,23 @@
+comandos:
+   Configurar el entorno virtual:
+      pip install virtualenv
+      python -m virtualvenv venv
+      .\venv\Scripts\activate
+
+   Configurar django:
+      pip install django
+      pip install djangorestframework
+      django-admin startproject <nombre del proyecto> .
+      python manage.py run server
+      python manage.py startapp <nombredelaaplicacion>
+      python manage.py makemigrations
+      python manage.py migrate
+
+
+Paso a paso:
+	1.- Se crea el modelo
+	2.- Se configuran las migraciones
+	3.- Crear el serializer
+	4.- Crear el archivo url
+	5.- Agregar la ruta en url del proyecto principal
+	5.- Configurar la información en el views

@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +42,8 @@ INSTALLED_APPS = [
     'users',
     'rest_framework'
 ]
+
+ASGI_APPLICATION = 'mywebsite.asgi.application'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
